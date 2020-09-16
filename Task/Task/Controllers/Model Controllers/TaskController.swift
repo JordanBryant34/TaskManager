@@ -13,9 +13,23 @@ class TaskController {
     
     static let shared = TaskController()
     
-    var tasks: [Task] {
-        return fetchTasks()
+    let fetchedResultsController: NSFetchedResultsController<Task>
+    
+    init() {
+        let request: NSFetchRequest<Task> = Task.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "isComplete", ascending: true), NSSortDescriptor(key: "dueDate", ascending: true)]
+        
+        let resultsController: NSFetchedResultsController<Task> = NSFetchedResultsController(fetchRequest: request, managedObjectContext: CoreDataStack.context, sectionNameKeyPath: "Complete", cacheName: nil)
+        
+        fetchedResultsController = resultsController
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error)
+        }
     }
+    
     
     func addTaskWith(name: String, notes: String?, dueDate: Date?) {
         _ = Task(name: name, dueDate: dueDate, notes: notes, isComplete: false)
@@ -48,12 +62,5 @@ class TaskController {
         } catch {
             print("Error saving to persistent store: \(error.localizedDescription)")
         }
-    }
-    
-    func fetchTasks() -> [Task] {
-        let moc = CoreDataStack.context
-        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        
-        return (try? moc.fetch(fetchRequest)) ?? []
     }
 }
