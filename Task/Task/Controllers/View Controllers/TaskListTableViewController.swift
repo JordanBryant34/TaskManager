@@ -83,36 +83,36 @@ extension TaskListTableViewController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 
         switch type {
-            case .insert:
-                tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
-            case .delete:
-                tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
-            case .move:
-                break
-            case .update:
-                break
-            default:
-                fatalError()
+        case .insert:
+            tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .move:
+            break
+        case .update:
+            tableView.reloadSections(IndexSet(integer: sectionIndex), with: .fade)
+        @unknown default:
+            fatalError()
         }
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-
-        switch type{
-            case .delete:
-                guard let indexPath = indexPath else { break }
-                tableView.deleteRows(at: [indexPath], with: .fade)
-            case .insert:
-                guard let newIndexPath = newIndexPath else { break }
-                tableView.insertRows(at: [newIndexPath], with: .automatic)
-            case .move:
-                guard let indexPath = indexPath, let newIndexPath = newIndexPath else { break }
-                tableView.moveRow(at: indexPath, to: newIndexPath)
-            case .update:
-                guard let indexPath = indexPath else { break }
-                tableView.reloadRows(at: [indexPath], with: .automatic)
-            default:
-                fatalError()
+        
+        switch type {
+        case .delete:
+            guard let indexPath = indexPath else { break }
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        case .insert:
+            guard let newIndexPath = newIndexPath else { break }
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+        case .move:
+            guard let indexPath = indexPath, let newIndexPath = newIndexPath else { break }
+            tableView.moveRow(at: indexPath, to: newIndexPath)
+        case .update:
+            guard let indexPath = indexPath else { break }
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        @unknown default:
+            fatalError()
         }
     }
     
